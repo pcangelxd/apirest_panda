@@ -3,10 +3,6 @@ import requests
 
 app = FastAPI()
 
-@app.get("/")
-def root():
-    return {"mensaje": "¡La API REST está funcionando!"}
-
 @app.get("/fetch-data")
 def fetch_data(
     power: str = Query(..., description="Poder del usuario"),
@@ -15,7 +11,7 @@ def fetch_data(
     order: str = Query(..., description="Orden de los resultados"),
 ):
     """
-    Endpoint que acepta solicitudes GET para mostrar JSON directamente.
+    Endpoint que procesa el campo 'status' y lo reemplaza con texto.
     """
     url = "https://lordsmobile.igg.com/project/game_tool/ajax.php?action=get_migration_scroll&lang=es"
 
@@ -27,11 +23,28 @@ def fetch_data(
         "order": order
     }
 
+    # Mapeo de valores de 'status'
+    status_mapping = {
+        1: "abandonado",
+        2: "normal",
+        3: "lleno",
+        4: "popular"
+    }
+
     try:
+        # Realiza la solicitud al servidor externo
         response = requests.post(url, data=form_data)
 
         if response.status_code == 200:
-            return {"respuesta": response.json()}
+            # Procesa la respuesta JSON
+            data = response.json()
+
+            # Reemplaza 'status' en cada elemento
+            for item in data:
+                if "status" in item and item["status"] in status_mapping:
+                    item["status"] = status_mapping[item["status"]]
+
+            return {"respuesta": data}
         else:
             raise HTTPException(
                 status_code=response.status_code,
