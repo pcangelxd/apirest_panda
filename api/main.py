@@ -39,10 +39,11 @@ def fetch_data(
             # Procesa la respuesta JSON
             data = response.json()
 
-            # Reemplaza 'status' en cada elemento
-            for item in data:
-                if "status" in item and item["status"] in status_mapping:
-                    item["status"] = status_mapping[item["status"]]
+            # Si hay datos en 'data', reemplaza el status
+            if "data" in data and isinstance(data["data"], list):
+                for item in data["data"]:
+                    if "status" in item and item["status"] in status_mapping:
+                        item["status"] = status_mapping[item["status"]]
 
             return {"respuesta": data}
         else:
