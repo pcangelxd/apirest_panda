@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Query
 import requests
 
 app = FastAPI()
@@ -8,9 +8,14 @@ def root():
     return {"mensaje": "¡La API REST está funcionando!"}
 
 @app.get("/fetch-data")
-def fetch_data(power: str, num: str, status: str, order: str):
+def fetch_data(
+    power: str = Query(..., description="Poder del usuario"),
+    num: str = Query(..., description="Cantidad de elementos"),
+    status: str = Query(..., description="Estado"),
+    order: str = Query(..., description="Orden de los resultados"),
+):
     """
-    Endpoint que realiza una solicitud GET para mostrar JSON directamente en el navegador.
+    Endpoint que acepta solicitudes GET para mostrar JSON directamente.
     """
     url = "https://lordsmobile.igg.com/project/game_tool/ajax.php?action=get_migration_scroll&lang=es"
 
