@@ -1,15 +1,12 @@
 {
-    "builds": [
-      {
-        "src": "api/main.py",
-        "use": "@vercel/python"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/api/main.py"
-      }
-    ]
-  }
-  
+  "version": 2,
+  "builds": [
+    { "src": "main.py", "use": "@vercel/python" },
+    { "src": "perfil.png", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/perfil.png", "dest": "/perfil.png" },
+    { "src": "/static/(.*)", "dest": "/static/$1" },
+    { "src": "/(.*)", "dest": "main.app" }
+  ]
+}
